@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    const {Observable} = rxjs
+    const source$ = new Observable(observable => {
+        observable.next(1)
+        observable.next(2)
+        observable.next(3)
+        observable.next(4)
+        observable.next(5)
+        //  error,complete都会阻止observable继续传值
+        observable.error(`it's a bug`)
+        observable.complete()
+        observable.next('这个内容是不会显示的')
+    })
+    //  subscribe订阅回调按照next,error,complete至少传入1个回调函数
+    source$.subscribe(
+        item => console.log(`查看获取的值 ${item}`),
+        e => console.log(`查看错误 ${e}`),
+        () => console.log('complete')
+    )
+</script>
+</html>

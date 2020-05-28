@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  subject作为订阅主体观察变化，然后分发给对应的观察者
+    //  建立主体
+    var subject = new rxjs.Subject();
+    //  建立观察对象
+    var clicks$ = rxjs.fromEvent(document,'click')
+    //  设定最多取得2个就完成时间
+    const {take} = rxjs.operators
+    clicks$ = clicks$.pipe(take(2))
+    //  创建的主体订阅事件
+    clicks$.subscribe(subject)
+    //  单独的观察者订阅主体，获取动态
+    var subs1$ = subject.subscribe((x)=> {console.log(`sub1观察`);console.log(x)})
+    var subs2$ = subject.subscribe((x)=> {console.log(`sub2观察`);console.log(x)})
+    //   取消观察者
+    // subs1$.unsubscribe(); 
+    // subs2$.unsubscribe();
+</script>
+</html>

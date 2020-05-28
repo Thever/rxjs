@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  concat拼接的Observable会依次执行
+    const {interval,of} = rxjs
+    const {take,concatAll} =rxjs.operators
+    const obs1 = interval(1000).pipe(take(5));
+    const obs2 = interval(500).pipe(take(2));
+    const obs3 = interval(2000).pipe(take(1));
+    //emit three observables
+    const source = of(obs1, obs2, obs3);
+    //subscribe to each inner observable in order when previous completes
+    const example = source.pipe(concatAll());
+    /*
+        output: 0,1,2,3,4,0,1,0
+        How it works...
+        Subscribes to each inner observable and emit values, when complete subscribe to next
+        obs1: 0,1,2,3,4 (complete)
+        obs2: 0,1 (complete)
+        obs3: 0 (complete)
+    */
+
+    const subscribe = example.subscribe(val => console.log(val));
+
+
+    //  concat合并promise,结果也会依次返回
+    // const {interval} = rxjs
+    // const {map,concatAll} = rxjs.operators
+
+    // //  创建promise函数
+    // const samplePromise = val => new Promise(resolve => resolve(val))
+
+    // //  定时发送值
+    // const source = interval(2000)
+
+    // //  创建案例
+    // const example = source.pipe(
+    //     map(val => samplePromise(val)),
+    //     //  重新整合promise返回结果
+    //     concatAll()
+    // )
+    
+    // //  订阅查看结果
+    // const subscribe = example.subscribe(
+    //     val => console.log('查看promise返回的值:'+val)
+    // )
+</script>
+</html>

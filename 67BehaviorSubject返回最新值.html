@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  BehaviorSubject返回最新传入值，需要传入值，没有的话就返回undefined
+    const {BehaviorSubject} = rxjs
+    const observableA = {
+        next: x => console.log('Observable A: '+x)
+    }
+    const observableB = {
+        next: x => console.log('Observable B: '+x)
+    }
+    const subject = new BehaviorSubject(0)
+    subject.subscribe(observableA)
+    subject.next(1)
+    subject.next(2)
+    subject.next(3)
+    setTimeout(()=>{
+        subject.subscribe(observableB)
+    },500)
+</script>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  防抖就是触发后闲置超过指定时间才触发，如果后一个触发在指定时间内，前一个触发就失效。
+    //  debounceTime(dueTime: number, scheduler: Scheduler): Observable
+
+    const {fromEvent} = rxjs
+    const {debounceTime} = rxjs.operators
+    fromEvent(document,'click').pipe(
+        debounceTime(1000)
+    ).subscribe(x => console.log(x))
+</script>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+    <div>
+        <button id="red">Red</button>
+        <button id="black">Black</button>
+    </div>
+    <div>Red: <span id="red-total"></span></div>
+    <div>Black: <span id="black-total"></span></div>
+    <div>Total: <span id="total"></span></div>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  combineLatest(observables: ...Observable, project: function): Observable
+    //  合并包含的observable最近发出的值的合集,同时进行不会阻塞
+    // const {interval,combineLatest} = rxjs
+    // const {take} = rxjs.operators
+    // const source$ = interval(500).pipe(take(3))
+    // const newest$ = interval(300).pipe(take(6))
+    // combineLatest(source$,newest$).subscribe(x=>console.log(x))
+
+    //  合并观测对象,传入函数处理
+    // const {timer,combineLatest} = rxjs
+    // const {take} = rxjs.operators
+    // const timerOne$ = timer(1000,4000).pipe(take(3))
+    // const timerTwo$ = timer(2000,4000).pipe(take(4))
+    // const timerThree$ = timer(3000,4000).pipe(take(2))
+    // combineLatest(
+    //     timerOne$,
+    //     timerTwo$,
+    //     timerThree$,
+    //     //  传入处理函数
+    //     (one,two,three) => {
+    //         return `
+    //             Timer One (Proj) Latest: ${one},
+    //             Timer Two (Proj) Latest: ${two},
+    //             Timer Three (Proj) Latest: ${three},
+    //         `
+    //     }
+    // ).subscribe(console.log)
+
+    //  联合事件
+    const { fromEvent, combineLatest } = rxjs
+    const { mapTo, startWith, scan, tap, map } = rxjs.operators
+    // elem refs
+    const redTotal = document.getElementById('red-total');
+    const blackTotal = document.getElementById('black-total');
+    const total = document.getElementById('total');
+
+    const addOneClick$ = id =>
+    fromEvent(document.getElementById(id), 'click').pipe(
+        // 每次点击增加1
+        mapTo(1),
+        // 生成总数
+        scan((acc, curr) => acc + curr, 0),
+        startWith(0)
+    );
+
+    combineLatest(addOneClick$('red'), addOneClick$('black')).subscribe(
+        ([red, black]) => {
+            redTotal.innerHTML = red;
+            blackTotal.innerHTML = black;
+            total.innerHTML = red + black;
+        }
+    );
+
+</script>
+</html>

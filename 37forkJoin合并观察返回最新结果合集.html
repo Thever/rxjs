@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+    
+    //  forkJoin(...args, selector : function): Observable
+    //  forkJoin类似promise.all等待所有变化结束后形成新的observable再统一返回
+    // const {forkJoin} = rxjs
+    // const {ajax} = rxjs.ajax
+    // //  整合资源
+    // forkJoin(
+    //     [
+    //         ajax.getJSON('https://api.apiopen.top/getJoke?page=1&count=2&type=video'),
+    //         ajax.getJSON('https://api.apiopen.top/getSingleJoke?sid=28654780'),
+    //         ajax.getJSON('https://api.apiopen.top/singlePoetry')
+    //     ]
+    // )
+    // .subscribe(console.log);
+
+    //  联合获取整合的对象最新的状态并输出
+    // const {forkJoin,of,interval} = rxjs
+    // const {delay,take} = rxjs.operators
+    // const myPromise = val =>
+    //     new Promise(resolve => setTimeout(()=>resolve(`Promise Resolved:${val}`),1000))
+    // const example = forkJoin(
+    //     of('Hello'),
+    //     of('World').pipe(delay(1000)),
+    //     // interval(1000).pipe(take(1)),
+    //     interval(1000).pipe(take(10)),
+    //     of(1,2,3,4,5),
+    //     myPromise('RESULT')
+    // )
+    // const subscribe = example.subscribe(val => console.log(val))
+
+    //  循环整合内容对象
+    // const {forkJoin,of} = rxjs
+    // const {mergeMap} = rxjs.operators
+
+    // const myPromise = val => 
+    //     new Promise(
+    //         resolve => setTimeout(()=>resolve(`Promise Resloved:${val}`),500)
+    //     )
+    
+    // const source = of([1,2,3,4,5])
+    // const example = source.pipe(mergeMap(q => forkJoin(...q.map(myPromise))))
+    // const subscribe = example.subscribe(val => console.log(val))
+
+    //  外部处理错误
+    // const {forkJoin,of,throwError} = rxjs
+    // const {delay,catchError} = rxjs.operators
+    // const example = forkJoin(
+    //     of('Hello'),
+    //     of('World').pipe(delay(1)),
+    //     throwError('This will error')
+    // ).pipe(catchError(error => of(error)))
+    // const subscribe = example.subscribe(val => console.log(val))
+
+    //  整合后内部元素报错获取全部信息
+    const {forkJoin,of,throwError} = rxjs
+    const {delay,catchError} = rxjs.operators
+    const example = forkJoin(
+        of('Hello'),
+        of('World').pipe(delay(1000)),
+        //  这里捕获异常转换成可循环对象输出了
+        throwError('Thiw will error').pipe(catchError(error => of(error)))
+    )
+    const subscribe = example.subscribe(val => console.log(val))
+</script>
+</html>

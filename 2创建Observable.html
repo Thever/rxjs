@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    const { Observable } = rxjs
+    //  这里用的箭头函数声明可观察对象自身变化
+    const source$ = new Observable(observable => {
+        observable.next(1)
+        observable.next(2)
+        observable.next(3)
+        observable.next(4)
+        observable.next(5)
+        // observable.complete()
+        observable.error("it's a bug")
+        obervable.next('这段文字不会被观察到')
+    })
+    //  你也可以用传统的匿名function
+    // const source$ = new Observable(function (observable){
+    //     observable.next(1)
+    //     observable.next(2)
+    //     observable.next(3)
+    //     observable.next(4)
+    //     observable.next(5)
+    //     // observable.complete()
+    //     observable.error("it's a bug")
+    //     obervable.next('这段文字不会被观察到')
+    // })
+    //  订阅观察处理
+    console.log('start')
+    //  写全点，next,error,complete
+    //  error,complete都会停止观测变化
+    source$.subscribe({
+        next: (x) => console.log(`获取的值为${x}`),
+        error: (x) => console.log(`查看报错${x}`),
+        complete: () => console.log('订阅完成')
+    })
+    console.log('end')
+</script>
+</html>

@@ -1,0 +1,79 @@
+Observable	可观察对象
+Observer		观察者
+Subscription	订阅，观察者监测观察对象
+Operators		操作
+Subject		主体，接收信息转发给多个观察者
+schedulers	排程控制器，控制并发处理
+
+rx.dev 的命令行自带rx.js资源，可以直接使用
+
+rxjs500毫秒执行一次，送出值
+操作的话只取前4次的值
+订阅将取到的值给console.log函数
+rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+用变量存储执行函数取40次
+var subs = rxjs.interval(500).pipe(rxjs.operators.take(40)).subscribe(console.log)
+
+取消订阅，打断观察者观察
+subs.unsubscribe()
+
+用结构赋值来优化代码，传统前端网站也能进行优化
+const {interval} = rxjs
+const { take } = rxjs.operators
+interval(500).pipe(take(4)).subscribe((d) => {console.log(d)})
+
+赋值方法
+导入事件监控
+const { fromEvent } =  rxjs
+监控当前页面点击事件
+var clicks$ = fromEvent(document,'click')
+观察者只有被订阅激活后才会去观察，否则并不会行动
+var subs = clicks$.subscribe({next:(d) => {console.log(d)}})
+取消订阅
+subs.unsubscribe()
+
+过滤
+事件监控
+const { fromEvent } =  rxjs
+监控当前页面点击事件
+var clicks$ = fromEvent(document,'click')
+导入过滤器
+const {filter} = rxjs.operators
+功能组合进行过滤
+var subs = clicks$.pipe(filter(d => d.clientX < 1000)).subscribe(console.log)
+取消订阅
+subs.unsubscribe()
+当然你想要限制取用次数，可以在运算中添加take限制，超出限制条件后会自动取消订阅
+const {take} =  rxjs.operators
+var subs = clicks$.pipe(
+  filter(d => d.clientX < 1000),
+  take(4)
+).subscribe(console.log)
+
+使用主体做事件广播
+//  建立主体
+var subject = new rxjs.Subject();
+//  建立观察对象
+var clicks$ = rxjs.fromEvent(document,'click')
+//  设定最多取得2个就完成时间
+const {take} = rxjs.operators
+clicks$ = clicks$.pipe(take(2))
+//  创建的主体订阅事件
+clicks$.subscribe(subject)
+//  单独的观察者订阅主体，获取动态
+var subs1$ = subject.subscribe((x)=> {console.log(x)})
+var subs2$ = subject.subscribe((x)=> {console.log(x)})
+//   取消观察者
+subs1$.unsubscribe(); 
+subs2$.unsubscribe();
+
+Rxjs一些好用的网站：
+英文官网	https://cn.rx.js.org/
+中文官网	https://cn.rx.js.org/
+旧API演示的弹珠图：	https://rxmarbles.com/
+视频演示不同的api:	https://reactive.how/rxjs/
+用来看引用结构： https://segmentfault.com/a/1190000009904920
+入门到精通:    http://www.manongjc.com/article/7059.html
+rxjslearn:   https://www.learnrxjs.io/learn-rxjs/operators/creation/empty
+rxjs git学习查看： https://github.com/ReactiveX/rxjs

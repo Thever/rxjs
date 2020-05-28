@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  mergeALL可以用来合并observable和promise
+    //  合并promise
+    // const {map,mergeAll} = rxjs.operators
+    // const {of} = rxjs
+    // const myPromise = val =>
+    // new Promise(resolve => setTimeout(() => resolve(`Result: ${val}`), 2000));
+    // //emit 1,2,3
+    // const source = of(1, 2, 3);
+
+    // const example = source.pipe(
+    //     //map each value to promise
+    //     map(val => myPromise(val)),
+    //     //emit result from source
+    //     mergeAll()
+    // );
+
+    // /*
+    // output:
+    // "Result: 1"
+    // "Result: 2"
+    // "Result: 3"
+    // */
+    // const subscribe = example.subscribe(val => console.log(val));
+
+    //  合并并发observable
+    const { take, map, delay, mergeAll }  = rxjs.operators;
+    const { interval } = rxjs
+
+    const source = interval(500).pipe(take(5));
+
+    /*
+        interval is emitting a value every 0.5s.  This value is then being mapped to interval that
+        is delayed for 1.0s.  The mergeAll operator takes an optional argument that determines how
+        many inner observables to subscribe to at a time.  The rest of the observables are stored
+        in a backlog waiting to be subscribe.
+    */
+    const example = source
+    .pipe(
+        map(val => source.pipe(delay(1000), take(3))),
+        mergeAll(2)
+    )
+    .subscribe(val => console.log(val));
+    /*
+        The subscription is completed once the operator emits all values.
+    */
+
+</script>
+</html>

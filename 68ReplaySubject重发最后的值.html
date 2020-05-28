@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  传入数量n,ReplaySubject会发送最后n个内容,如果n>事件数量就返回全部
+    const observerA = {
+        next: x => console.log('Observer A: ' + x)
+    }
+    const observerB = {
+        next: x => console.log('Observer B: ' + x)
+    }
+
+    const subject = new rxjs.ReplaySubject(2) // 重放最后两个
+
+    subject.subscribe(observerA)
+
+    subject.next(1) // Observer A: 1
+    subject.next(2) // Observer A: 2
+    subject.next(3) // Observer A: 3
+    subject.next(4) // Observer A: 4
+    subject.next(5) // Observer A: 5
+    subject.complete()
+
+    setTimeout(() => {
+    subject.subscribe(observerB)
+    // Observer B: 4
+    // Observer B: 5
+    }, 500)
+</script>
+</html>

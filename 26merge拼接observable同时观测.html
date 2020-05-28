@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    const {interval} = rxjs
+    const {merge,take,mapTo} = rxjs.operators
+    
+    //emit every 2.5 seconds
+    const first = interval(2500);
+    //emit every 2 seconds
+    const second = interval(2000);
+    //emit every 1.5 seconds
+    const third = interval(1500);
+    //emit every 1 second
+    const fourth = interval(1000);
+
+    //  demo里的这个样式会订阅不是函数的问题。。
+    //emit outputs from one observable
+    // const example = merge(
+    //     first.pipe(mapTo('FIRST!')),
+    //     second.pipe(mapTo('SECOND!'))
+    // );
+
+    //  这种方式可行
+    //  merge用来合并多个可观察对象，但是是同时进行的，没有阻塞
+    const example = first.pipe(merge(second));
+    //output: "FOURTH", "THIRD", "SECOND!", "FOURTH", "FIRST!", "THIRD", "FOURTH"
+    const subscribe = example.subscribe(val => console.log(val));
+</script>
+</html>

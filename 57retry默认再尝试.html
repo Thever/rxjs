@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    const {interval,of,throwError} = rxjs
+    const {mergeMap,retry} = rxjs.operators
+    const source = interval(1000)
+    const example = source.pipe(
+        mergeMap(
+            val => {
+                if(val > 5){
+                    return throwError('Error!')
+                }else{
+                    return of(val)
+                }
+            }
+        ),
+        //  尝试连接2次
+        retry(2)
+    )
+    const Subscribe = example.subscribe({
+        next: val => console.log(val),
+        error: val => console.log(`${val}: Retried 2 times then quit!`)
+    })
+</script>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  周期对象
+    const {interval} = rxjs
+    //  操作符
+    const {filter, map} = rxjs.operators
+    //  pipe里放操作符处理，然后丢给订阅
+    //  注意方法间隔是，可能是作为可循环对象传入的
+    const source$ = interval(1000).pipe(
+        filter(x => x % 2 === 0),
+        map(x => x * 2)
+    )
+
+    source$.subscribe(x => console.log(x))
+    </script>
+</html>

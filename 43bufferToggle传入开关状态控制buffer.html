@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    const {interval} = rxjs
+    const {bufferToggle} = rxjs.operators
+
+    const sourceInterval = interval(1000)
+    const startInterval = interval(5000)
+    const closeInterval = val => {
+        console.log(`Value ${val} emitted, starting buffer! Closing in 3s`)
+        return interval(3000)
+    }
+    const bufferToggleInterval = sourceInterval.pipe(
+        bufferToggle(startInterval,closeInterval)
+    )
+    const subscribe = bufferToggleInterval.subscribe(
+        val => console.log('Emitted Buffer:', val)
+    )
+    //  从结果来看是先关再开，周期输出
+    //  Value 0 emitted, starting buffer! Closing in 3s
+    //  Emitted Buffer: (4) [4, 5, 6, 7]
+    //  Value 1 emitted, starting buffer! Closing in 3s
+    //  Emitted Buffer: (4) [9, 10, 11, 12]
+    //  Value 2 emitted, starting buffer! Closing in 3s
+    //  Emitted Buffer: (4) [14, 15, 16, 17]
+</script>
+</html>

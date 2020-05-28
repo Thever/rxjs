@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+    
+    //  mergeMap(project: function: Observable, resultSelector: function: any, concurrent: number): Observable
+    //  mergeMap保存promise或者observable时不会按次序保存，会同步进行(和mergeMap一样)
+
+    //  mergeMap 保存位置
+    // const {fromEvent,of} = rxjs
+    // const {mergeMap,delay} = rxjs.operators
+
+    // // 延迟保存位置模拟网络请求
+    // const saveLocation = location => {
+    //     //  of这里转成了observable
+    //     return of(location).pipe(delay(500))
+    // }
+    // //  流，也就是监听异步
+    // const click$ = fromEvent(document,'click')
+
+    // //  处理监听事件
+    // click$.pipe(
+    //     //  不用用e:MounseEvent来指定鼠标点击事件似乎
+    //     mergeMap((e) => {
+    //         return saveLocation({
+    //             x:e.clientX,
+    //             y:e.clientY,
+    //             timestamp: Date.now
+    //         })
+    //     })
+    // )
+    // .subscribe(r => console.log('Saved!', r))
+
+
+    //  mergeMap处理Ajax回调
+    // const {fromEvent} = rxjs
+    // const {ajax} = rxjs.ajax
+    // const {mergeMap} = rxjs.operators
+
+    // //  请求地址
+    // const API_URL = "https://api.apiopen.top/getJoke?page=1&count=2&type=video"
+
+    // //  流，监听异步事件
+    // const click$ = fromEvent(document,'click')
+    // click$.pipe(
+    //     mergeMap(()=> ajax.getJSON(API_URL))
+    // ).subscribe(console.log)
+
+    //  mergeMap合并promise/observable
+    // const {of,from} = rxjs
+    // const {mergeMap} = rxjs.operators
+
+    // //  生成promise方法
+    // const myPromise = val =>
+    //     new Promise(resolve => resolve(`${val} World!`));
+
+    // // of发送时间
+    // const source$ = of('Hello');
+
+    // // 订阅监听
+    // source$
+    //     .pipe(mergeMap(val => myPromise(val)))
+    //     .subscribe(val => console.log(val));
+
+    // //  也能用from生成observable
+    // const source2$ = from(['Goodbye'])
+    // source2$
+    //     .pipe(mergeMap(val => myPromise(val)))
+    //     .subscribe(val => console.log(val));
+
+
+    //  mergeMap用来映射结果
+    // const {of} = rxjs
+    // const {mergeMap} = rxjs.operators
+
+    // //  生成promise函数
+    // const myPromise = val =>
+    //     new Promise(resolve => resolve(`${val} world!`))
+
+    // //  发送hello
+    // const source$ = of('Hello');
+    // source$.pipe(
+    //     mergeMap(
+    //         val => myPromise(val),
+    //         //  可提供第二个参数，用于观察内部源值和发出值
+    //         (valueFromSource, valueFromPromise) => {
+    //             return `Source: ${valueFromSource}, Promise: ${valueFromPromise}`;
+    //         }
+    //     )
+    // )
+    // .subscribe(val => console.log(val))
+
+    //  mergeMap合并并发值
+    const {interval} = rxjs
+    const {mergeMap,take} = rxjs.operators
+
+    //  定期发送值
+    const source$ = interval(1000)
+    //  订阅操作
+    source$.pipe(
+        mergeMap(
+            //  合并对象,函数和observable都可
+            val =>  interval(5000).pipe(take(2)),
+            //  结果选择器，函数即可
+            (oVal,iVal,oIndex,iIndex) => [oVal,iVal,oIndex,iIndex],
+            //  同时发生的数量，数字
+            2
+        )
+    ).subscribe(val => console.log(val))
+</script>
+</html>

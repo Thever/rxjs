@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  pluck(properties: ...args): Observable
+    //  抽取特定的属性值并发送
+
+    //  获取最顶部属性
+    // const {from} = rxjs
+    // const {pluck} = rxjs.operators
+    // const source = from([
+    //     {name:'jojo1',age:1,oh:1},
+    //     {name:'jojo2',age:2,oh:2},
+    //     {name:'jojo3',age:3,oh:3},
+    // ])
+    // const example = source.pipe(pluck('name'))
+    // const subscribe = example.subscribe(val => console.log(val))
+
+
+    //  获取info下的name
+    const {from} = rxjs
+    const {pluck} = rxjs.operators
+    const source = from([
+        {id:1,info:{name:'jojo'}},
+        {id:2,info:{name:'jojo2'}},
+        {id:3,info:{name:'jojo3'}}
+    ])
+    const example = source.pipe(pluck('info','name'))
+    const subscribe = example.subscribe(val => console.log(val)) 
+</script>
+</html>

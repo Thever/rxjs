@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rxjs</title>
+</head>
+<body>
+    <h1>在集合console.log来查看代码的演示效果</h1>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/rxjs/6.2.0/rxjs.umd.min.js"></script>
+<script>
+    //  cdn引用的直接调用
+    // rxjs.interval(500).pipe(rxjs.operators.take(4)).subscribe(console.log)
+
+    //  window(windowBoundaries: Observable): Observable
+    //  使用rxjs要注意window被定义的问题
+    // RxJS v6+
+    // const { timer, interval } = rxjs;
+    // const { scan, mergeAll } = rxjs.operators;
+
+    // //emit immediately then every 1s
+    // const source = timer(0, 1000);
+
+    // // const {window} = rxjs.operators
+    // // const example = source.pipe(window(interval(3000)));
+    // /*这样写会浏览器中会提示window已经被定义，因为浏览器默认有window这个保留关键字*/
+    // const example = source.pipe(rxjs.operators.window(interval(3000)));
+    // const count = example.pipe(scan((acc, curr) => acc + 1, 0));
+    // const subscribe = count.subscribe(val => console.log(`Window ${val}:`));
+    // const subscribeTwo = example
+    // .pipe(mergeAll())
+    // .subscribe(val => console.log(val));
+
+    //  单纯使用订阅查看输出内容
+    // const {timer,interval} = rxjs
+    // const source = timer(0,1000)
+    // const example = source.pipe(rxjs.operators.window(interval(3000)))
+    // const subscribe = example.subscribe(x =>  console.log(x))
+
+    //  鼠标点击
+    const {fromEvent,interval} = rxjs
+    const {mergeAll,map,take} = rxjs.operators
+    const clicks = fromEvent(document,'click')
+    const sec = interval(1000)
+    const result = clicks.pipe(
+        rxjs.operators.window(sec),
+        map(win => win.pipe(take(2))),
+        mergeAll()
+    )
+    result.subscribe(x => console.log(x))
+</script>
+</html>
